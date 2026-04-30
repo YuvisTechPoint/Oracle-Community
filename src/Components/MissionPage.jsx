@@ -168,23 +168,23 @@ export default function MissionPage() {
     <>
       <style>{MISSION_STYLES}</style>
 
-      <section style={{ background: "white", padding: "80px 0 100px", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: "white", padding: "40px 0 60px", position: "relative", overflow: "hidden" }} className="sm:py-16 md:py-20">
 
         {/* ── Ambient background glows ── */}
-        <div className="glow-orb" style={{
+        <div className="glow-orb hidden sm:block" style={{
           position: "absolute", top: "10%", left: "15%",
           width: "500px", height: "500px",
           background: "radial-gradient(circle, rgba(200,0,0,0.22) 0%, transparent 70%)",
           borderRadius: "50%", pointerEvents: "none",
         }} />
-        <div className="glow-orb2" style={{
+        <div className="glow-orb2 hidden sm:block" style={{
           position: "absolute", bottom: "10%", right: "10%",
           width: "400px", height: "400px",
           background: "radial-gradient(circle, rgba(180,0,0,0.18) 0%, transparent 70%)",
           borderRadius: "50%", pointerEvents: "none",
         }} />
 
-        <div style={{ maxWidth: "1260px", margin: "0 auto", padding: "0 32px" }}>
+        <div style={{ maxWidth: "1260px", margin: "0 auto", padding: "0 16px" }} className="sm:px-6 md:px-8">
 
           {/* ── Main card container ── */}
           <div
@@ -207,7 +207,7 @@ export default function MissionPage() {
             }} />
 
             {/* ── Header with wave notch ── */}
-            <div style={{ position: "relative", padding: "56px 60px 0" }}>
+            <div style={{ position: "relative", padding: "32px 20px 0" }} className="sm:px-8 md:px-12 lg:px-[60px]">
 
               {/* eyebrow */}
               <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
@@ -232,8 +232,8 @@ export default function MissionPage() {
                 }} />
               </div>
 
-              {/* decorative right element */}
-              <div style={{
+              {/* decorative right element - Hidden on mobile */}
+              <div className="hidden md:block" style={{
                 position: "absolute", top: "40px", right: "60px",
                 fontFamily: "'Bebas Neue', sans-serif",
                 fontSize: "13px", letterSpacing: "0.4em",
@@ -246,43 +246,43 @@ export default function MissionPage() {
             </div>
 
             {/* ── Description + Stats row ── */}
-            <div style={{ display: "flex", gap: "48px", padding: "36px 60px 48px", alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "24px", padding: "24px 20px 32px", alignItems: "flex-start" }} className="sm:flex-row sm:items-center sm:gap-8 md:gap-12 sm:px-8 md:px-12 lg:px-[60px] lg:py-[36px] lg:pb-[48px]">
               <p style={{
                 fontFamily: "'Barlow', sans-serif",
-                fontSize: "15px",
-                lineHeight: 1.85,
+                fontSize: "14px",
+                lineHeight: 1.75,
                 color: "rgba(255,255,255,0.72)",
                 maxWidth: "520px",
                 margin: 0,
                 flex: "1 1 300px",
                 fontStyle: "italic",
                 fontWeight: 300,
-              }}>
+              }} className="sm:text-[15px] sm:leading-[1.85]">
                 Our Analytics Dashboard provides a clear and intuitive interface for you to easily analyze your data.
                 From customizable graphs to real-time data updates, our platform offers everything you need
                 to gain <strong style={{ color: "rgba(255,180,180,0.9)", fontStyle: "normal", fontWeight: 600 }}>valuable insights</strong> and drive meaningful decisions.
               </p>
 
               {/* Stats strip */}
-              <div style={{ display: "flex", gap: "32px", flex: "1 1 auto", justifyContent: "flex-end", flexWrap: "wrap" }}>
+              <div style={{ display: "flex", gap: "16px", flex: "1 1 auto", justifyContent: "flex-start" }} className="sm:gap-6 md:gap-8 sm:flex-wrap sm:justify-end md:gap-[32px]">
                 {STATS.map((s, i) => (
                   <div key={i} className="stat-item" style={{ animationDelay: `${i * 0.12}s`, textAlign: "center" }}>
                     <div style={{
                       fontFamily: "'Bebas Neue', sans-serif",
-                      fontSize: "38px",
+                      fontSize: "28px",
                       color: "#fff",
                       letterSpacing: "0.04em",
                       lineHeight: 1,
                       textShadow: "0 0 20px rgba(255,120,120,0.5)",
-                    }}>{s.value}</div>
-                    <div style={{ fontFamily: "'Barlow', sans-serif", fontSize: "11px", color: "rgba(255,255,255,0.5)", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: "4px" }}>{s.label}</div>
+                    }} className="sm:text-[32px] md:text-[38px]">{s.value}</div>
+                    <div style={{ fontFamily: "'Barlow', sans-serif", fontSize: "10px", color: "rgba(255,255,255,0.5)", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: "4px" }} className="sm:text-[11px]">{s.label}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* ── Divider line ── */}
-            <div style={{ margin: "0 60px 40px", height: "1px", background: "linear-gradient(90deg, transparent, rgba(255,150,150,0.3) 40%, rgba(255,150,150,0.3) 60%, transparent)" }} />
+            <div style={{ margin: "0 20px 24px", height: "1px", background: "linear-gradient(90deg, transparent, rgba(255,150,150,0.3) 40%, rgba(255,150,150,0.3) 60%, transparent)" }} className="sm:mx-8 md:mx-12 lg:mx-[60px] sm:mb-8 md:mb-10" />
 
             {/* ── Carousel rows ── */}
             <div style={{ display: "flex", flexDirection: "column", gap: "14px", paddingBottom: "16px" }}>
@@ -293,12 +293,12 @@ export default function MissionPage() {
             {/* ── Bottom bar: tag cloud + CTA ── */}
             <div style={{
               display: "flex",
+              flexDirection: "column",
               justifyContent: "space-between",
-              alignItems: "center",
-              padding: "32px 60px 44px",
-              flexWrap: "wrap",
-              gap: "20px",
-            }}>
+              alignItems: "flex-start",
+              padding: "24px 20px 32px",
+              gap: "16px",
+            }} className="sm:flex-row sm:items-center sm:px-8 md:px-12 lg:px-[60px] sm:pb-11 sm:gap-5">
               {/* tag pills */}
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                 {["Cloud", "Database", "DevOps", "AI/ML", "Security", "PL/SQL"].map(tag => (

@@ -8,28 +8,31 @@ import { Typewriter } from 'react-simple-typewriter'
 const TOTAL = teamMembers.length;
 
 // Compute 3D transform for each card based on its offset from center
-function getCardStyle(offset, total) {
+function getCardStyle(offset, total, isMobile) {
   // offset: -3 to +3 from center (0)
   const absOff = Math.abs(offset);
   const sign = Math.sign(offset);
 
+  // Smaller spread on mobile
+  const spreadFactor = isMobile ? 80 : 170;
+
   // Rotation: side cards tilt inward
-  const rotateY = -offset * 12; // degrees, tilt toward center
+  const rotateY = -offset * (isMobile ? 8 : 12); // degrees, tilt toward center
   // Horizontal spread
-  const translateX = offset * 170;
+  const translateX = offset * spreadFactor;
   // Push back side cards (Z depth)
-  const translateZ = -absOff * absOff * 28;
+  const translateZ = -absOff * absOff * (isMobile ? 15 : 28);
   // Lift center card up, sides drop down creating arc
-  const translateY = absOff * absOff * 18 - (absOff === 0 ? 18 : 0);
+  const translateY = absOff * absOff * (isMobile ? 10 : 18) - (absOff === 0 ? (isMobile ? 10 : 18) : 0);
   // Scale: center biggest
-  const scale = 1 - absOff * 0.07;
+  const scale = 1 - absOff * (isMobile ? 0.1 : 0.07);
   // Opacity fade for far edges
   const opacity = absOff > 2.5 ? 0.35 : absOff > 1.8 ? 0.6 : absOff > 0.8 ? 0.85 : 1;
   // zIndex
   const zIndex = 10 - Math.round(absOff);
 
   return {
-    transform: `perspective(1200px) rotateY(${rotateY}deg) translateX(${translateX}px) translateY(${translateY}px) translateZ(${translateZ}px) scale(${scale})`,
+    transform: `perspective(${isMobile ? 800 : 1200}px) rotateY(${rotateY}deg) translateX(${translateX}px) translateY(${translateY}px) translateZ(${translateZ}px) scale(${scale})`,
     opacity,
     zIndex,
     transition: "transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.7s ease",
@@ -126,16 +129,23 @@ export default function TeamCarousel() {
 
       .card-3d {
         position: absolute;
-        width: 200px;
-        border-radius: 22px;
+        width: 140px;
+        border-radius: 16px;
         overflow: hidden;
         cursor: pointer;
         transform-origin: center bottom;
         transform-style: preserve-3d;
         will-change: transform;
         left: 50%;
-        margin-left: -100px;
+        margin-left: -70px;
         top: 0;
+      }
+      @media (min-width: 640px) {
+        .card-3d {
+          width: 200px;
+          margin-left: -100px;
+          border-radius: 22px;
+        }
       }
 
       .card-3d:hover .card-hover-lift {
@@ -151,16 +161,17 @@ export default function TeamCarousel() {
       style={{ fontFamily: "'DM Sans', sans-serif", background: "white", minHeight: "100vh" }}
     >
       {/* Hero Section */}
-      <div style={{ textAlign: "center", paddingTop: 60, paddingBottom: 20, maxWidth: 720, margin: "0 auto", padding: "60px 24px 20px" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "white", border: "1px solid #e5e7eb", borderRadius: 999, padding: "6px 14px 6px 10px", marginBottom: 28, fontSize: 13, fontWeight: 500, color: "#374151", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
-          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#6366f1", display: "inline-block" }} />
-          Growing with 500+ members — Be part of it →
+      <div style={{ textAlign: "center", paddingTop: 40, maxWidth: 720, margin: "0 auto", padding: "40px 16px 20px" }} className="sm:pt-12 md:pt-16 sm:px-6">
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "white", border: "1px solid #e5e7eb", borderRadius: 999, padding: "5px 12px 5px 8px", marginBottom: 20, fontSize: 12, fontWeight: 500, color: "#374151", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }} className="sm:gap-2 sm:px-3 sm:py-1.5 sm:mb-7 sm:text-[13px]">
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#6366f1", display: "inline-block" }} className="sm:w-2 sm:h-2" />
+          <span className="hidden sm:inline">Growing with 500+ members — Be part of it →</span>
+          <span className="sm:hidden">500+ members — Join us →</span>
           <span style={{ color: "#6366f1", fontWeight: 600, cursor: "pointer" }}>Careers →</span>
         </div>
 
-        <h1 className="hero-title" style={{ fontSize: "clamp(28px, 4vw, 46px)", fontWeight: 700, color: "#0f0f1a", lineHeight: 1.25, marginBottom: 18, fontFamily: "'Playfair Display', serif" }}>
-          Learn Oracle. Build skills. Connect with the community.<br />
-          <em>
+        <h1 className="hero-title sm:!text-[28px] md:!text-[36px] lg:!text-[46px] sm:!leading-[1.25] sm:!mb-4" style={{ fontSize: "24px", fontWeight: 700, color: "#0f0f1a", lineHeight: 1.3, marginBottom: 12, fontFamily: "'Playfair Display', serif" }}>
+          Learn Oracle. Build skills. Connect with the community.<br className="hidden sm:block" />
+          <em className="block mt-2 sm:mt-0">
             <Typewriter
               words={["Learning", "building", " & growing together"]}
               loop={5}
@@ -172,21 +183,21 @@ export default function TeamCarousel() {
             /></em>
         </h1>
 
-        <p style={{ fontSize: 15, color: "#6b7280", marginBottom: 32, lineHeight: 1.7 }}>
+        <p style={{ fontSize: 14, color: "#6b7280", marginBottom: 24, lineHeight: 1.6 }} className="sm:text-[15px] sm:leading-[1.7] sm:mb-8">
           Join the Oracle Kolkata Community to connect, collaborate, and innovate with developers, students, and professionals.
         </p>
 
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <button style={{ display: "flex", alignItems: "center", gap: 8, padding: "11px 22px", borderRadius: 999, border: "1.5px solid #d1d5db", background: "white", fontSize: 14, fontWeight: 600, cursor: "pointer", color: "#374151", transition: "all 0.2s", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+        <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+          <button style={{ display: "flex", alignItems: "center", gap: 6, padding: "9px 16px", borderRadius: 999, border: "1.5px solid #d1d5db", background: "white", fontSize: 13, fontWeight: 600, cursor: "pointer", color: "#374151", transition: "all 0.2s", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }} className="sm:gap-2 sm:px-5 sm:py-2.5 sm:text-sm"
             onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)"}
             onMouseLeave={e => e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.06)"}
           >
-            <span style={{ width: 20, height: 20, borderRadius: "50%", background: "#6366f1", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ width: 0, height: 0, borderTop: "5px solid transparent", borderBottom: "5px solid transparent", borderLeft: "8px solid white", marginLeft: 2 }} />
+            <span style={{ width: 16, height: 16, borderRadius: "50%", background: "#6366f1", display: "flex", alignItems: "center", justifyContent: "center" }} className="sm:w-5 sm:h-5">
+              <span style={{ width: 0, height: 0, borderTop: "4px solid transparent", borderBottom: "4px solid transparent", borderLeft: "6px solid white", marginLeft: 1 }} className="sm:border-t-[5px] sm:border-b-[5px] sm:border-l-[8px] sm:ml-0.5" />
             </span>
             View demo
           </button>
-          <button style={{ padding: "11px 26px", borderRadius: 999, border: "none", background: "linear-gradient(135deg, #6366f1, #8b5cf6)", color: "white", fontSize: 14, fontWeight: 600, cursor: "pointer", boxShadow: "0 4px 14px rgba(99,102,241,0.4)", transition: "all 0.2s" }}
+          <button style={{ padding: "9px 18px", borderRadius: 999, border: "none", background: "linear-gradient(135deg, #6366f1, #8b5cf6)", color: "white", fontSize: 13, fontWeight: 600, cursor: "pointer", boxShadow: "0 4px 14px rgba(99,102,241,0.4)", transition: "all 0.2s" }} className="sm:px-6 sm:py-2.5 sm:text-sm"
             onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 8px 20px rgba(99,102,241,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 14px rgba(99,102,241,0.4)"; }}
           >
@@ -197,7 +208,7 @@ export default function TeamCarousel() {
 
       {/* 3D Curved Carousel */}
       <div
-        style={{ position: "relative", height: 340, margin: "40px 0 20px", userSelect: "none" }}
+        style={{ position: "relative", height: 260, margin: "24px 0 16px", userSelect: "none" }} className="sm:h-[300px] sm:my-8 sm:mb-5 md:h-[340px]"
         onMouseEnter={() => { isPausedRef.current = true; }}
         onMouseLeave={() => { isPausedRef.current = false; }}
       >
@@ -205,7 +216,9 @@ export default function TeamCarousel() {
         {[-3, -2, -1, 0, 1, 2, 3].map((offset) => {
           const idx = ((centerIdx + offset) % TOTAL + TOTAL) % TOTAL;
           const member = teamMembers[idx];
-          const style3d = getCardStyle(offset, TOTAL);
+          // Check if mobile for responsive card styles
+          const isMobile = typeof window !== 'undefined' ? window.innerWidth < 640 : false;
+          const style3d = getCardStyle(offset, TOTAL, isMobile);
           const isCenter = offset === 0;
 
           return (
@@ -229,11 +242,11 @@ export default function TeamCarousel() {
               >
                 {/* Card image */}
                 <div style={{
-                  height: isCenter ? 250 : 220,
+                  height: isCenter ? 170 : 150,
                   background: member.color,
                   overflow: "hidden",
                   transition: "height 0.5s ease",
-                }}>
+                }} className="sm:h-[220px] sm:data-[center=true]:h-[250px]" data-center={isCenter}>
                   <img
                     src={member.avatar}
                     alt={member.name}
@@ -247,14 +260,14 @@ export default function TeamCarousel() {
                     ? "rgba(10,10,24,0.92)"
                     : "rgba(15,15,30,0.82)",
                   backdropFilter: "blur(12px)",
-                  padding: isCenter ? "13px 16px" : "10px 14px",
+                  padding: isCenter ? "10px 12px" : "8px 10px",
                   transition: "all 0.4s",
-                }}>
-                  <div style={{ fontWeight: 700, fontSize: isCenter ? 14 : 12, color: "white", letterSpacing: 0.3 }}>{member.name}</div>
-                  <div style={{ fontSize: isCenter ? 12 : 10, color: isCenter ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.55)", marginTop: 2 }}>{member.role}</div>
+                }} className="sm:p-[10px_14px] sm:data-[center=true]:p-[13px_16px]" data-center={isCenter}>
+                  <div style={{ fontWeight: 700, fontSize: isCenter ? 12 : 10, color: "white", letterSpacing: 0.3 }} className="sm:text-xs sm:data-[center=true]:text-sm" data-center={isCenter}>{member.name}</div>
+                  <div style={{ fontSize: isCenter ? 10 : 9, color: isCenter ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.55)", marginTop: 2 }} className="sm:text-[10px] sm:data-[center=true]:text-xs" data-center={isCenter}>{member.role}</div>
                   {isCenter && (
-                    <div style={{ marginTop: 8, fontSize: 10, color: "#a5b4fc", fontWeight: 600, letterSpacing: 0.5 }}>
-                      CLICK TO VIEW PROFILE →
+                    <div style={{ marginTop: 6, fontSize: 9, color: "#a5b4fc", fontWeight: 600, letterSpacing: 0.5 }} className="sm:mt-2 sm:text-[10px]">
+                      CLICK TO VIEW →
                     </div>
                   )}
                 </div>
@@ -264,11 +277,11 @@ export default function TeamCarousel() {
               {isCenter && (
                 <div style={{
                   position: "absolute", inset: -2,
-                  borderRadius: 24,
+                  borderRadius: 18,
                   border: "2px solid rgba(99,102,241,0.5)",
                   pointerEvents: "none",
                   boxShadow: "0 0 20px rgba(99,102,241,0.2)",
-                }} />
+                }} className="sm:rounded-[24px]" />
               )}
             </div>
           );

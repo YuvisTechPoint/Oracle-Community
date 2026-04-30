@@ -1,22 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { X } from 'lucide-react';
 
-const GOOGLE_SCRIPT_URL =
-  import.meta.env.VITE_GOOGLE_SCRIPT_URL ||
-  'https://script.google.com/macros/s/AKfycbyAM1uSscNggqKBbK73Gfgi3s5m0DVM_O60Z0fP1Uh7pygaqNmET-xhb7Kbf6XcYkTT/exec';
-
 const LoginModal = ({ isOpen, onClose }) => {
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
-
-  // Clear stale message and reset form every time modal opens
-  useEffect(() => {
-    if (isOpen) {
-      setMessage('');
-      setFormData({ name: '', email: '', phone: '' });
-    }
-  }, [isOpen]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,29 +20,42 @@ const LoginModal = ({ isOpen, onClose }) => {
     setMessage('');
 
     try {
-      // Use GET with query params — the only reliable way to call Apps Script from a browser
-      // without a backend proxy. no-cors on GET requests works and the body reaches the script.
-      const params = new URLSearchParams({
-        name:  formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        type:  'login',
+      // Use the deployed Google Apps Script URL from environment variables
+      const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL || 'https://script.google.com/macros/d/YOUR_DEPLOYMENT_ID/usercontent/exec';
+      
+      if (GOOGLE_SCRIPT_URL.includes('YOUR_DEPLOYMENT_ID')) {
+        setMessage('Configuration error: Google Apps Script URL not set. Please contact administrator.');
+        setIsLoading(false);
+        return;
+      }
+
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          type: 'login',
+        }),
       });
 
-      await fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`, {
-        method: 'GET',
-        mode: 'no-cors',
-      });
+      const data = await response.json();
 
-      // no-cors gives opaque response — treat completed fetch as success
-      setMessage('✓ Thank you! Your information has been saved.');
-      setTimeout(() => {
-        onClose();
-        setFormData({ name: '', email: '', phone: '' });
-      }, 1500);
+      if (data.success) {
+        setMessage('✓ Thank you! Your information has been saved.');
+        setTimeout(() => {
+          onClose();
+          setFormData({ name: '', email: '', phone: '' });
+        }, 1500);
+      } else {
+        setMessage(data.error || 'Something went wrong. Please try again.');
+      }
     } catch (error) {
-      console.error('Submission error:', error);
-      setMessage('Failed to connect. Please try again later.');
+      console.error('Error:', error);
+      setMessage('Failed to connect to server. Please try again later.');
     } finally {
       setIsLoading(false);
     }
@@ -60,11 +65,15 @@ const LoginModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
+      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
+
+      {/* Modal */}
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8 animate-in fade-in zoom-in duration-300">
+        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 transition-colors"
@@ -72,11 +81,17 @@ const LoginModal = ({ isOpen, onClose }) => {
           <X size={24} />
         </button>
 
+        {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-[#800000]">Join Our Community</h2>
-          <p className="text-gray-500 text-sm mt-2">Enter your details to connect with us</p>
+          <h2 className="text-2xl font-bold text-[#800000]">
+            Join Our Community
+          </h2>
+          <p className="text-gray-500 text-sm mt-2">
+            Enter your details to connect with us
+          </p>
         </div>
 
+        {/* Message */}
         {message && (
           <div
             className={`mb-4 p-3 rounded-lg text-center text-sm ${
@@ -89,9 +104,12 @@ const LoginModal = ({ isOpen, onClose }) => {
           </div>
         )}
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Name
+            </label>
             <input
               type="text"
               name="name"
@@ -102,8 +120,11 @@ const LoginModal = ({ isOpen, onClose }) => {
               placeholder="Enter your name"
             />
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email Address
+            </label>
             <input
               type="email"
               name="email"
@@ -114,8 +135,11 @@ const LoginModal = ({ isOpen, onClose }) => {
               placeholder="Enter your email"
             />
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Phone Number
+            </label>
             <input
               type="tel"
               name="phone"
@@ -126,6 +150,7 @@ const LoginModal = ({ isOpen, onClose }) => {
               placeholder="Enter your phone number"
             />
           </div>
+
           <button
             type="submit"
             disabled={isLoading}

@@ -376,11 +376,11 @@ export default function Course_section() {
     <>
       <style>{STYLES}</style>
 
-      <section className="cs-section-bg" style={{ padding: "90px 0 110px" }}>
-        <div style={{ maxWidth: "1260px", margin: "0 auto", padding: "0 40px" }}>
+      <section className="cs-section-bg" style={{ padding: "60px 0 80px" }}>
+        <div style={{ maxWidth: "1260px", margin: "0 auto", padding: "0 16px" }} className="sm:px-6 md:px-10 lg:px-12">
 
           {/* ── Section header ── */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "28px", marginBottom: "48px" }}>
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "28px", marginBottom: "48px" }} className="sm:!flex-row sm:!items-end">
             <div>
               {/* eyebrow */}
               <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px" }}>
@@ -490,7 +490,7 @@ export default function Course_section() {
           {/* ── Course grid ── */}
           <div style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))",
             gap: "26px",
           }}>
             {filtered.map((course, i) => (

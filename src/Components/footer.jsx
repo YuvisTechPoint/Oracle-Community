@@ -39,24 +39,26 @@ export default function Footer() {
         style={{
           background: "#ffffff",
           borderTop: "solid red",
-          borderRadius: "40px 40px 0 0",
-          padding: "20px 70px 20px 70px ",
+          borderRadius: "24px 24px 0 0",
+          padding: "16px 20px",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
-          justifyContent: "space-between",
+          gap: "16px",
         }}
+        className="sm:px-8 sm:py-5 sm:flex-row sm:justify-between md:px-12 lg:px-[70px] lg:rounded-t-[40px]"
       >
         {/* Oracle Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-          <img src={Logo} alt="logo" className="w-60 h-auto" />
+          <img src={Logo} alt="logo" className="w-40 sm:w-48 md:w-60 h-auto" />
         </div>
 
         {/* Stay in the Loop */}
-        <div style={{ textAlign: "right" }}>
-          <h2 style={{ fontSize: "54px", fontWeight: 900, color: "#9b0000", margin: "0 0 8px 0", lineHeight: 1.1 }}>
+        <div style={{ textAlign: "center" }} className="sm:text-right">
+          <h2 style={{ fontSize: "24px", fontWeight: 900, color: "#9b0000", margin: "0 0 8px 0", lineHeight: 1.1 }} className="sm:text-3xl md:text-4xl lg:text-[54px]">
             Stay in the Loop
           </h2>
-          <p style={{ color: "#666", fontSize: "15px", margin: 0 }}>
+          <p style={{ color: "#666", fontSize: "13px", margin: 0 }} className="sm:text-sm md:text-[15px]">
             Get event updates and Oracle insights straight to your inbox.
           </p>
         </div>
@@ -66,29 +68,31 @@ export default function Footer() {
       <div
         style={{
           background: "linear-gradient(180deg, #e30000 0%, #8c0000 55%, #4d0000 100%)",
-          borderRadius: "36px 36px 0 0",
-          padding: "120px 80px 0 80px",
-          height: "60vh"
+          borderRadius: "24px 24px 0 0",
+          padding: "40px 16px 0",
+          minHeight: "auto",
         }}
+        className="sm:px-8 md:px-12 lg:px-20 lg:rounded-t-[36px] lg:pt-[80px] xl:pt-[120px]"
       >
         {/* Content row */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1.8fr 1fr",
-            gap: "60px",
-            paddingBottom: "100px",
-            alignItems: "start",
+            display: "flex",
+            flexDirection: "column",
+            gap: "32px",
+            paddingBottom: "40px",
+            alignItems: "stretch",
           }}
+          className="sm:gap-10 md:grid md:grid-cols-2 lg:grid-cols-[1fr_1.8fr_1fr] lg:gap-[60px] lg:pb-[100px]"
         >
           {/* Col 1: About */}
-          <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.75, margin: 0 }}>
+          <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "14px", lineHeight: 1.75, margin: 0 }} className="md:text-[15px]">
             High level experience in web design and development knowledge, producing quality work.
           </p>
 
           {/* Col 2: Subscribe */}
           <div>
-            <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.75, marginBottom: "22px", marginTop: 0 }}>
+            <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "14px", lineHeight: 1.75, marginBottom: "16px", marginTop: 0 }} className="sm:mb-5 md:text-[15px]">
               Subscribe to stay tuned for new web design and latest updates. Let's do it!
             </p>
             <div style={{ display: "flex" }}>
@@ -96,11 +100,11 @@ export default function Footer() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email Address"
+                placeholder="Enter your email"
                 style={{
                   flex: 1,
-                  padding: "14px 18px",
-                  fontSize: "14px",
+                  padding: "12px 14px",
+                  fontSize: "13px",
                   border: "1.5px solid rgba(255,255,255,0.35)",
                   background: "rgba(255,255,255,0.07)",
                   color: "white",
@@ -108,19 +112,21 @@ export default function Footer() {
                   borderRadius: "6px 0 0 6px",
                   boxSizing: "border-box",
                 }}
+                className="sm:py-3 sm:px-4 sm:text-sm lg:placeholder:text-[14px]"
               />
               <button
                 style={{
-                  padding: "14px 30px",
+                  padding: "12px 16px",
                   background: "white",
                   color: "#900",
                   fontWeight: 700,
-                  fontSize: "14px",
+                  fontSize: "13px",
                   border: "none",
                   borderRadius: "0 6px 6px 0",
                   cursor: "pointer",
                   whiteSpace: "nowrap",
                 }}
+                className="sm:px-6 sm:py-3 sm:text-sm lg:px-[30px]"
               >
                 Subscribe
               </button>
@@ -128,9 +134,9 @@ export default function Footer() {
           </div>
 
           {/* Col 3: Follow + Call */}
-          <div style={{ display: "flex", gap: "48px", alignItems: "flex-start" }}>
+          <div style={{ display: "flex", gap: "32px", alignItems: "flex-start" }} className="sm:gap-12 lg:gap-[48px]">
             <div>
-              <p style={{ color: "white", fontWeight: 700, fontSize: "15px", margin: "0 0 14px 0" }}>Follow us</p>
+              <p style={{ color: "white", fontWeight: 700, fontSize: "14px", margin: "0 0 12px 0" }} className="md:text-[15px]">Follow us</p>
               <div style={{ display: "flex", gap: "10px" }}>
                 <a href="#"><InstagramIcon /></a>
                 <a href="#"><FacebookIcon /></a>
@@ -138,8 +144,8 @@ export default function Footer() {
               </div>
             </div>
             <div>
-              <p style={{ color: "white", fontWeight: 700, fontSize: "15px", margin: "0 0 14px 0" }}>Call us</p>
-              <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "15px", margin: 0 }}>+1 800 854-36-80</p>
+              <p style={{ color: "white", fontWeight: 700, fontSize: "14px", margin: "0 0 12px 0" }} className="md:text-[15px]">Call us</p>
+              <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "14px", margin: 0 }} className="md:text-[15px]">+1 800 854-36-80</p>
             </div>
           </div>
         </div>
@@ -148,21 +154,25 @@ export default function Footer() {
         <div
           style={{
             borderTop: "1px solid rgba(255,255,255,0.18)",
-            padding: "20px 0 24px 0",
+            padding: "16px 0 20px",
             display: "flex",
+            flexDirection: "column",
+            gap: "12px",
             justifyContent: "space-between",
             alignItems: "center",
           }}
+          className="sm:flex-row sm:py-5 sm:gap-0 lg:pb-6"
         >
-          <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "13px", margin: 0 }}>
+          <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "12px", margin: 0 }} className="sm:text-[13px]">
             © 2021 All Rights Reserved
           </p>
-          <div style={{ display: "flex", gap: "36px" }}>
+          <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center" }} className="sm:gap-6 md:gap-9">
             {["Privacy Policy", "Terms of Use", "Sales and Refunds", "Legal", "Site Map"].map((link) => (
               <a
                 key={link}
                 href="#"
-                style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px", textDecoration: "none" }}
+                style={{ color: "rgba(255,255,255,0.6)", fontSize: "12px", textDecoration: "none" }}
+                className="sm:text-[13px]"
               >
                 {link}
               </a>
