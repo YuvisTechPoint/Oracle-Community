@@ -10,13 +10,13 @@ export default function CommunityArea() {
       <div className="hidden md:block absolute top-0 right-[70px] w-[1.5px] h-[900px] bg-[#cc0000] z-20 opacity-35" />
 
       {/* Top content row: Logo left, Stats right */}
-      <div className="relative z-10 flex flex-col md:flex-row justify-between items-start px-4 sm:px-6 lg:px-12 pt-6 sm:pt-8 lg:pt-10">
+      <div className="relative z-10 flex flex-col md:flex-row justify-between items-start px-4 sm:px-6 lg:px-12 pt-16 sm:pt-20 lg:pt-24">
         {/* Left — Oracle Kolkata Community logo */}
         <div className="flex items-center gap-4 w-full md:w-auto">
           <img
             src={Logo}
             alt="Oracle Kolkata Community Logo"
-            className="w-48 sm:w-64 md:w-80 lg:w-[550px] h-auto z-20"
+            className="w-48 sm:w-64 md:w-80 lg:w-[420px] xl:w-[480px] h-auto z-20"
           />
         </div>
 
