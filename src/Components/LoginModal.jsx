@@ -1,14 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
+// Real script URL hardcoded as fallback — works on Vercel without env var
+const GOOGLE_SCRIPT_URL =
+  import.meta.env.VITE_GOOGLE_SCRIPT_URL ||
+  'https://script.google.com/macros/s/AKfycbyAM1uSscNggqKBbK73Gfgi3s5m0DVM_O60Z0fP1Uh7pygaqNmET-xhb7Kbf6XcYkTT/exec';
+
 const LoginModal = ({ isOpen, onClose }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
+
+  // Clear stale error and reset form every time modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setMessage('');
+      setFormData({ name: '', email: '', phone: '' });
+    }
+  }, [isOpen]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,14 +29,11 @@ const LoginModal = ({ isOpen, onClose }) => {
     setMessage('');
 
     try {
-      // TODO: PASTE YOUR GOOGLE APPS SCRIPT URL HERE
-      // Get it from: google-script-ready-to-deploy.txt after following deployment steps
-      const GOOGLE_SCRIPT_URL = 'PASTE_URL_HERE'; // <-- REPLACE THIS
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
+      // no-cors + text/plain avoids CORS preflight — Google Apps Script doesn't support it
+      await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
@@ -36,20 +42,15 @@ const LoginModal = ({ isOpen, onClose }) => {
         }),
       });
 
-      const data = await response.json();
-
-      if (data.success) {
-        setMessage('Thank you! Your information has been saved.');
-        setTimeout(() => {
-          onClose();
-          setFormData({ name: '', email: '', phone: '' });
-        }, 1500);
-      } else {
-        setMessage('Something went wrong. Please try again.');
-      }
+      // no-cors gives opaque response — treat completed fetch as success
+      setMessage('✓ Thank you! Your information has been saved.');
+      setTimeout(() => {
+        onClose();
+        setFormData({ name: '', email: '', phone: '' });
+      }, 1500);
     } catch (error) {
-      console.error('Error:', error);
-      setMessage('Failed to connect to server. Please try again.');
+      console.error('Submission error:', error);
+      setMessage('Failed to connect. Please try again later.');
     } finally {
       setIsLoading(false);
     }
@@ -59,15 +60,11 @@ const LoginModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
-
-      {/* Modal */}
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8 animate-in fade-in zoom-in duration-300">
-        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 transition-colors"
@@ -75,17 +72,11 @@ const LoginModal = ({ isOpen, onClose }) => {
           <X size={24} />
         </button>
 
-        {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-[#800000]">
-            Join Our Community
-          </h2>
-          <p className="text-gray-500 text-sm mt-2">
-            Enter your details to connect with us
-          </p>
+          <h2 className="text-2xl font-bold text-[#800000]">Join Our Community</h2>
+          <p className="text-gray-500 text-sm mt-2">Enter your details to connect with us</p>
         </div>
 
-        {/* Message */}
         {message && (
           <div
             className={`mb-4 p-3 rounded-lg text-center text-sm ${
@@ -98,12 +89,9 @@ const LoginModal = ({ isOpen, onClose }) => {
           </div>
         )}
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Name
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
             <input
               type="text"
               name="name"
@@ -114,11 +102,8 @@ const LoginModal = ({ isOpen, onClose }) => {
               placeholder="Enter your name"
             />
           </div>
-
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email Address
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
             <input
               type="email"
               name="email"
@@ -129,11 +114,8 @@ const LoginModal = ({ isOpen, onClose }) => {
               placeholder="Enter your email"
             />
           </div>
-
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Phone Number
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
             <input
               type="tel"
               name="phone"
@@ -144,7 +126,6 @@ const LoginModal = ({ isOpen, onClose }) => {
               placeholder="Enter your phone number"
             />
           </div>
-
           <button
             type="submit"
             disabled={isLoading}

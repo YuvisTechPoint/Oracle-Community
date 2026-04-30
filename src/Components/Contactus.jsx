@@ -1,7 +1,10 @@
 import { useState } from "react";
-import OracelContact from "../assets/OracleContactus.png"
+import OracelContact from "../assets/OracleContactus.png";
 
-
+// Real script URL hardcoded as fallback — works on Vercel without env var
+const GOOGLE_SCRIPT_URL =
+  import.meta.env.VITE_GOOGLE_SCRIPT_URL ||
+  'https://script.google.com/macros/s/AKfycbyAM1uSscNggqKBbK73Gfgi3s5m0DVM_O60Z0fP1Uh7pygaqNmET-xhb7Kbf6XcYkTT/exec';
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -23,13 +26,11 @@ export default function ContactUs() {
     setSubmitMessage("");
 
     try {
-      // PASTE YOUR GOOGLE APPS SCRIPT URL HERE (same URL as LoginModal)
-      const GOOGLE_SCRIPT_URL = 'PASTE_URL_HERE';
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
+      // no-cors + text/plain avoids CORS preflight — Google Apps Script doesn't support it
+      await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
@@ -39,14 +40,10 @@ export default function ContactUs() {
         }),
       });
 
-      const data = await response.json();
-
-      if (data.success) {
-        setSubmitMessage("Thank you! Your message has been sent successfully.");
-        setFormData({ name: "", email: "", subject: "", message: "" });
-      } else {
-        setSubmitMessage("Something went wrong. Please try again.");
-      }
+      // no-cors gives opaque response — treat completed fetch as success
+      setSubmitMessage("✓ Thank you! Your message has been sent successfully.");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+      setTimeout(() => setSubmitMessage(""), 3000);
     } catch (error) {
       console.error('Error submitting contact form:', error);
       setSubmitMessage("Failed to send message. Please try again later.");
@@ -58,7 +55,6 @@ export default function ContactUs() {
   return (
     <section className="py-16 px-6 bg-white">
       <div className="max-w-5xl mx-auto">
-        {/* Heading */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Contact Us</h1>
           <p className="text-gray-500 max-w-lg mx-auto text-sm leading-relaxed">
@@ -68,11 +64,8 @@ export default function ContactUs() {
           </p>
         </div>
 
-        {/* Form + Image Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-          {/* Left: Form */}
           <div className="flex flex-col gap-4">
-            {/* Name */}
             <div className="relative">
               <label className="absolute -top-2 left-3 text-xs text-gray-400 bg-white px-1">
                 Name
@@ -86,7 +79,6 @@ export default function ContactUs() {
               />
             </div>
 
-            {/* Email */}
             <input
               type="email"
               name="email"
@@ -96,7 +88,6 @@ export default function ContactUs() {
               className="w-full border border-red-200 bg-red-50 rounded-md px-4 py-3 text-sm text-gray-400 focus:outline-none focus:ring-2 focus:ring-red-300 placeholder-gray-400"
             />
 
-            {/* Subject */}
             <input
               type="text"
               name="subject"
@@ -106,7 +97,6 @@ export default function ContactUs() {
               className="w-full border border-red-200 bg-red-50 rounded-md px-4 py-3 text-sm text-gray-400 focus:outline-none focus:ring-2 focus:ring-red-300 placeholder-gray-400"
             />
 
-            {/* Message */}
             <textarea
               name="message"
               value={formData.message}
@@ -116,7 +106,6 @@ export default function ContactUs() {
               className="w-full border border-red-200 bg-red-50 rounded-md px-4 py-3 text-sm text-gray-400 focus:outline-none focus:ring-2 focus:ring-red-300 placeholder-gray-400 resize-none"
             />
 
-            {/* Submit Message */}
             {submitMessage && (
               <div
                 className={`p-3 rounded-md text-sm ${
@@ -129,7 +118,6 @@ export default function ContactUs() {
               </div>
             )}
 
-            {/* Submit Button */}
             <div>
               <button
                 onClick={handleSubmit}
@@ -141,8 +129,7 @@ export default function ContactUs() {
             </div>
           </div>
 
-          {/* Right: Video */}
-          <img src={OracelContact} alt="" />
+          <img src={OracelContact} alt="Contact Oracle Kolkata" />
         </div>
       </div>
     </section>
