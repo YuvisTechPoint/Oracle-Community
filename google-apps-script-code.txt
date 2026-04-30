@@ -1,0 +1,45 @@
+// Paste this into Google Apps Script (Extensions → Apps Script)
+
+const SPREADSHEET_ID = '11cz2MMiOWh52kU9MKo83ry2PIs8sYnMc00LnGDn2C_k';
+const SHEET_NAME = 'Sheet1';
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    
+    const timestamp = new Date().toISOString();
+    const rowData = [
+      timestamp,
+      data.name || '',
+      data.email || '',
+      data.phone || '',
+      data.type || 'contact',
+      data.subject || '',
+      data.message || ''
+    ];
+    
+    sheet.appendRow(rowData);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({success: true, message: 'Saved'}))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeaders({'Access-Control-Allow-Origin': '*'});
+      
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({success: false, message: error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeaders({'Access-Control-Allow-Origin': '*'});
+  }
+}
+
+function doOptions() {
+  return ContentService.createTextOutput('')
+    .setHeaders({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    });
+}

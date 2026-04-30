@@ -1,0 +1,61 @@
+// COPY THIS ENTIRE CODE INTO GOOGLE APPS SCRIPT
+// 1. Open your spreadsheet: https://docs.google.com/spreadsheets/d/11cz2MMiOWh52kU9MKo83ry2PIs8sYnMc00LnGDn2C_k/edit
+// 2. Click Extensions → Apps Script
+// 3. Delete default code, paste this
+// 4. Click Save (disk icon)
+// 5. Click Deploy → New deployment → Web app
+// 6. Set: Execute as = Me, Who has access = Anyone
+// 7. Click Deploy → Authorize → Allow
+// 8. Copy the Web App URL and paste it below in this file
+
+const SPREADSHEET_ID = '11cz2MMiOWh52kU9MKo83ry2PIs8sYnMc00LnGDn2C_k';
+const SHEET_NAME = 'Sheet1';
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    
+    const rowData = [
+      new Date().toISOString(),  // Timestamp
+      data.name || '',           // Name
+      data.email || '',          // Email
+      data.phone || '',          // Phone
+      data.type || 'contact',    // Type (login/contact)
+      data.subject || '',        // Subject
+      data.message || ''         // Message
+    ];
+    
+    sheet.appendRow(rowData);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true, 
+        message: 'Data saved to spreadsheet'
+      }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeaders({'Access-Control-Allow-Origin': '*'});
+      
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false, 
+        error: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeaders({'Access-Control-Allow-Origin': '*'});
+  }
+}
+
+function doOptions() {
+  return ContentService.createTextOutput('')
+    .setHeaders({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    });
+}
+
+// Paste your Web App URL here after deployment:
+// WEB_APP_URL = 
