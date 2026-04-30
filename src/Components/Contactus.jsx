@@ -1,7 +1,6 @@
 import { useState } from "react";
 import OracelContact from "../assets/OracleContactus.png";
 
-// Real script URL hardcoded as fallback — works on Vercel without env var
 const GOOGLE_SCRIPT_URL =
   import.meta.env.VITE_GOOGLE_SCRIPT_URL ||
   'https://script.google.com/macros/s/AKfycbyAM1uSscNggqKBbK73Gfgi3s5m0DVM_O60Z0fP1Uh7pygaqNmET-xhb7Kbf6XcYkTT/exec';
@@ -26,18 +25,18 @@ export default function ContactUs() {
     setSubmitMessage("");
 
     try {
-      // no-cors + text/plain avoids CORS preflight — Google Apps Script doesn't support it
-      await fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
+      // Use GET with query params — the only reliable way to call Apps Script from a browser
+      const params = new URLSearchParams({
+        name:    formData.name,
+        email:   formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        type:    'contact',
+      });
+
+      await fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`, {
+        method: 'GET',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-          type: 'contact',
-        }),
       });
 
       // no-cors gives opaque response — treat completed fetch as success
