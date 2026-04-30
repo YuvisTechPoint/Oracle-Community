@@ -1,5 +1,5 @@
 import Logo from '../assets/Logo.png';
-import KolkataCity from '../assets/Kolkata_design.svg';
+import KolkataCity from '../assets/kolkata_design.svg';
 
 export default function CommunityArea() {
   return (

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Logo from "../assets/logo.png"
+import Logo from "../assets/Logo.png"
 
 const InstagramIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="20" height="20" stroke="white" strokeWidth="1.5">
